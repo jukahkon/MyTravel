@@ -17,9 +17,13 @@ namespace MyTravel.Models
     
         public MyTravelContext() : base("name=MyTravelContext")
         {
+            Database.SetInitializer(new MyTravelDatabaseInitializer());
         }
 
-        public System.Data.Entity.DbSet<MyTravel.Models.City> Cities { get; set; }
-    
+        public System.Data.Entity.DbSet<MyTravel.Models.Destination> Destinations { get; set; }
+
+        public System.Data.Entity.DbSet<MyTravel.Models.Trip> Trips { get; set; }
+
+        
     }
 }
