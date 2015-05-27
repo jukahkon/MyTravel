@@ -38,7 +38,9 @@ namespace MyTravel.Controllers
         // GET: Trips/Create
         public ActionResult Create()
         {
-            return View();
+            MyTripCreateVM vm = new MyTripCreateVM() { Year = 2015 };
+
+            return View(vm);
         }
 
         // POST: Trips/Create
@@ -46,16 +48,27 @@ namespace MyTravel.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "TripID,Description,Year")] Trip trip)
+        public ActionResult Create([Bind(Include = "City,Country,Description,Year")] MyTripCreateVM vm)
         {
             if (ModelState.IsValid)
             {
+                Destination dst = db.Destinations.Where(e => (e.City == vm.City) && (e.Country == vm.Country)).FirstOrDefault();
+
+                if (dst==null)
+                {
+                    dst = new Destination() { City = vm.City, Country = vm.Country };
+                    db.Destinations.Add(dst);
+                } 
+
+                Trip trip = new Trip() { Description = vm.Description, Year = vm.Year, Destination = dst };
                 db.Trips.Add(trip);
+                
                 db.SaveChanges();
+
                 return RedirectToAction("Index");
             }
 
-            return View(trip);
+            return View(vm);
         }
 
         // GET: Trips/Edit/5
